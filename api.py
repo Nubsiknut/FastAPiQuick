@@ -1,12 +1,17 @@
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, Query, Depends
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi_utils.cbv import cbv
+from fastapi_utils.inferring_router import InferringRouter
 from pydantic import BaseModel
 from sqlalchemy import create_engine, Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from fastapi_utils.tasks import repeat_every
+from datetime import timedelta
+
 
 app = FastAPI()
-
+router = InferringRouter()
 
 origins = [
     "http://localhost",
