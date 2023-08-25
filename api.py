@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from sqlalchemy import create_engine, Column, Integer, String
@@ -54,6 +54,13 @@ def create_user(user: UserCreate):
     db.refresh(db_user)
     db.close()
     return db_user
+
+@app.get("/users/")
+def get_users(limit: int = Query(default=10, le=100)):
+    db = SessionLocal()
+    users = db.query(User).limit(limit).all()
+    db.close()
+    return users
 
 @app.get("/users/{user_id}", response_model=UserResponse)
 def get_user(user_id: int):
